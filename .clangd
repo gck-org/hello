@@ -1,0 +1,7 @@
+CompileFlags:
+  Add: [-std=c23]
+
+Diagnostics:
+  ClangTidy:
+    Add: [clang-diagnostic-*]
+    Remove: []
