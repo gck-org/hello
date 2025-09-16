@@ -1,3 +1,4 @@
+NAME := hello
 PREFIX = /usr/bin/
 
 HELLO_SRCS := $(wildcard src/*.c)
@@ -5,8 +6,11 @@ HELLO_OBJS := $(patsubst src/%.c,build/obj/%.o,$(HELLO_SRCS))
 
 HELLO := bin/hello
 
-ALLOWED_DIRS = doc include man src tools
+ALLOWED_DIRS = include man src tools
 DISTDIRS := $(sort $(shell find . -maxdepth 1 -type d -not -name '.' -printf '%f\n'))
+
+TARBALL = $(NAME)-$(VERSION).tar.gz
+DISTDIR = $(NAME)-$(VERSION)
 
 -include config.mak
 
@@ -28,6 +32,13 @@ build/obj/%.o: src/%.c config.mak
 $(HELLO): $(HELLO_OBJS) 
 	$(CC) $(CFLAGS) -Iinclude -DCOMMIT=$(shell git rev-list --count --all) $^ -o $@
 
+dist:
+	$(RM) -r $(DISTDIR) $(TARBALL)
+	mkdir -p $(DISTDIR)
+	cp -r src include Makefile README COPYING INSTALL configure config.h $(DISTDIR)/
+	tar -czf $(TARBALL) $(DISTDIR)
+	$(RM) -r $(DISTDIR)
+
 endif
 
 install: $(HELLO)
@@ -42,6 +53,9 @@ clean:
 
 distclean: clean
 	$(RM) config.mak
+
+check: $(HELLO)
+	./src/tests/run_unit_tests.sh
 
 syntax-check:
 	@set -e; \
@@ -65,4 +79,4 @@ distcheck: distclean
 		esac; \
 	done
 
-.PHONY: all clean dist-clean install uninstall build syntax-check distcheck
+.PHONY: all clean dist-clean install uninstall build syntax-check distcheck dist
