@@ -10,11 +10,12 @@ run() {
     "$@" || fatal "could not run: $*"
 }
 
-[ -d "./tools" ] || fatal "must be run from parent directory"
+[ ! -d "./src" ] && fatal "must be run from parent directory"
 
 run sh ./tools/format
 run rm -rf .cache
 run rm -f compile_commands.json
 run make distclean
+run make -C doc clean
 
 echo "done."
