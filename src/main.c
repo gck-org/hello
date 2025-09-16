@@ -13,7 +13,14 @@
 
 void usage(int status)
 {
-	fputs("TODO", stdout);
+	printf("Usage: %s [OPTION]... [NAMES]...\n", PROGRAM);
+	fputs("\
+Print a friendly greeting.\n", stdout);
+	puts("");
+	fputs("\
+--help        display this help and exit\n\
+--version     display version information and exit\n", stdout)
+	puts("");
 }
 
 int main(int argc, char **argv)
