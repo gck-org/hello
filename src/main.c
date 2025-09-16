@@ -9,17 +9,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../config.h"
 #include "standard.h"
 
 void usage(int status)
 {
 	printf("Usage: %s [OPTION]... [NAMES]...\n", PROGRAM);
 	fputs("\
-Print a friendly greeting.\n", stdout);
+Print a friendly greeting.\n",
+	      stdout);
 	puts("");
 	fputs("\
 --help        display this help and exit\n\
---version     display version information and exit\n", stdout);
+--version     display version information and exit\n",
+	      stdout);
 }
 
 int main(int argc, char **argv)
