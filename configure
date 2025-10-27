@@ -5,7 +5,7 @@
 #       - Sets C Flags
 #
 #    COMPILATION (Linux - POSIX):
-#        ./make
+#        ./configure
 #
 #
 #   LICENSE: BSD-3-Clause
@@ -50,13 +50,12 @@ There is NO WARRANTY, to the extent permitted by law."
 
 usage="\
 Usage: $me [OPTION]...
-Prepares the build system for GCK distribtuions
+Prepares the build system for GCK distributions
 
 Options:
-	
-   --release
-   --debug
-   --prefix PREFIX
+   --release        enable release flags
+   --enable-debug   enable debugging options
+   --prefix PREFIX  set installation prefix
 
    --help     print this help and exit
    --version  output version information
@@ -71,58 +70,80 @@ Use these variables to override the choices made by 'configure'."
 release=false
 debug=false
 prefix=/usr/local
-CFLAGS=
+CFLAGS=-pedantic
 CC=
 
-while test $# -gt 0; do
+while [ $# -gt 0 ]; do
   case $1 in
-    --help) echo "$usage"; exit 0;;
-    --version) echo "$version"; exit 0;;
-    --release) release=true;;
-    --debug) debug=true;;
-    --prefix) shift; prefix=${1:?};;
-    CC=*) CC=${arg#*=} ;;
-    CFLAGS=*) CFLAGS=${arg#*=} ;;
+    --help) echo "$usage"; exit 0 ;;
+    --version) echo "$version"; exit 0 ;;
+    --release) release=true ;;
+    --enable-debug) debug=true ;;
+    --prefix) shift; prefix=${1:?missing prefix argument} ;;
+    --strict) CFLAGS+="-Werror" ;;
+    CC=*) CC=${1#*=} ;;
+    CFLAGS=*) CFLAGS=${1#*=} ;;
     -*)
-     echo "$0: Unknown option '$1'." >&2
-     echo "$0: Try '--help' for more information.'$1'." >&2
-     exit 1;;
+      echo "$0: Unknown option '$1'." >&2
+      echo "$0: Try '--help' for more information." >&2
+      exit 1 ;;
   esac
   shift
 done
 
 if [ "$release" = true ] && [ "$debug" = true ]; then
-	echo "$0: Can't set both '--release' and '--debug'." >&2
-	echo "$0: Try '--help' for more information.'$1'." >&2
-	exit 1
+  echo "$0: Can't set both '--release' and '--debug'." >&2
+  echo "$0: Try '--help' for more information." >&2
+  exit 1
 fi
 
-cmdexists() { type "$1" >/dev/null 2>&1 ; }
+cmdexists() { command -v "$1" >/dev/null 2>&1 ; }
 trycc() { [ -z "$CC" ] && cmdexists "$1" && CC=$1 ; }
 
-printf "checking for C compiler... "
-trycc gcc
-trycc clang
-trycc cc
-trycc icx
-printf "%s\n" "$CC"
+if [ -z "$CC" ]; then
+  printf "checking for C compiler... "
+  trycc gcc
+  trycc clang
+  trycc cc
+  if [ -z "$CC" ]; then
+    echo "none found"
+    exit 1
+  fi
+  printf "%s\n" "$CC"
+fi
 
+printf "checking for git... "
+if cmdexists git; then
+  echo "yes"
+else
+  echo "no"
+  exit 1
+fi
 
 printf "checking whether C compiler works... "
-tmpc="$(mktemp -d)/test.c"
+tmpcdir="$(mktemp -d)"
+tmpc="$tmpcdir/test.c"
 echo "typedef int x;" > "$tmpc"
 if output=$($CC $CFLAGS -c -o /dev/null "$tmpc" 2>&1); then
-printf "yes\n"
+  printf "yes\n"
 else
-printf "no; %s\n" "$output"
-exit 1
+  printf "no; %s\n" "$output"
+  rm -rf "$tmpcdir"
+  exit 1
+fi
+rm -rf "$tmpcdir"
+
+if [ "$release" = true ]; then
+  CFLAGS="$CFLAGS -O3 -pipe -DNDEBUG -march=native -flto -s -fdata-sections -ffunction-sections -Wl,--gc-sections"
+elif [ "$debug" = true ]; then
+  CFLAGS="$CFLAGS -O0 -ggdb -Wall -Wextra -Wpedantic -fno-omit-frame-pointer -DDEBUG"
 fi
 
 printf "creating config.mak... "
 {
-printf "PREFIX=%s\n" "$prefix"
-printf "CFLAGS=%s\n" "$CFLAGS"
-printf "CC=%s\n" "$CC"
+  printf "PREFIX=%s\n" "$prefix"
+  printf "CFLAGS=%s\n" "$CFLAGS"
+  printf "CC=%s\n" "$CC"
 } > config.mak
 printf "done\n"
 
