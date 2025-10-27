@@ -6,7 +6,7 @@ OBJS := $(patsubst src/%.c,build/obj/%.o,$(SRCS))
 BIN := bin/$(PACKAGE)
 
 COMMIT := $(shell git rev-list --count --all)
-FLAGS := -I. -DCOMMIT=$(COMMIT) -DSHOW_TRACE --std=c23
+FLAGS := -I. -DCOMMIT=$(COMMIT) --std=c2x -pedantic
 
 VERSION := $(shell git describe --tags --always --dirty)
 TARBALL := $(PACKAGE)-$(VERSION).tar.gz
