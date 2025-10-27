@@ -1,16 +1,16 @@
-NAME := hello
-PREFIX = /usr/bin/
+PACKAGE := hello
 
-HELLO_SRCS := $(wildcard src/*.c)
-HELLO_OBJS := $(patsubst src/%.c,build/obj/%.o,$(HELLO_SRCS))
+SRCS := $(wildcard src/*.c) $(wildcard lib/*.c)
+OBJS := $(patsubst src/%.c,build/obj/%.o,$(SRCS))
 
-HELLO := bin/hello
+BIN := bin/$(PACKAGE)
 
-ALLOWED_DIRS = include man src tools
-DISTDIRS := $(sort $(shell find . -maxdepth 1 -type d -not -name '.' -printf '%f\n'))
+COMMIT := $(shell git rev-list --count --all)
+FLAGS := -I. -DCOMMIT=$(COMMIT) -DSHOW_TRACE --std=c23
 
-TARBALL = $(NAME)-$(VERSION).tar.gz
-DISTDIR = $(NAME)-$(VERSION)
+VERSION := $(shell git describe --tags --always --dirty)
+TARBALL := $(PACKAGE)-$(VERSION).tar.gz
+RELEASE_FILES := doc src lib COPYING AUTHORS README yait.1 INSTALL Makefile configure config.h
 
 -include config.mak
 
@@ -20,32 +20,25 @@ all:
 	@exit 1
 else
 
-all: build $(HELLO)
+all: build $(BIN)
 
 build:
 	mkdir -p bin
 	mkdir -p build/obj
 
 build/obj/%.o: src/%.c config.mak
-	$(CC) $(CFLAGS) -DCOMMIT=$(shell git rev-list --count --all) -Iinclude -c $< -o $@
+	$(CC) $(FLAGS) $(CFLAGS) -c $< -o $@
 
-$(HELLO): $(HELLO_OBJS) 
-	$(CC) $(CFLAGS) -Iinclude -DCOMMIT=$(shell git rev-list --count --all) $^ -o $@
-
-dist:
-	$(RM) -r $(DISTDIR) $(TARBALL)
-	mkdir -p $(DISTDIR)
-	cp -r src include Makefile README COPYING INSTALL configure config.h $(DISTDIR)/
-	tar -czf $(TARBALL) $(DISTDIR)
-	$(RM) -r $(DISTDIR)
+$(BIN): $(OBJS) 
+	$(CC) $(FLAGS) $(CFLAGS) $^ -o $@
 
 endif
 
-install: $(HELLO)
-	cp $(HELLO) $(PREFIX)
+install: $(BIN)
+	cp $(BIN) $(PREFIX)
 
 uninstall:
-	$(RM) $(PREFIX)hello
+	$(RM) $(PREFIX)$(PACKAGE)
 
 clean:
 	$(RM) -r bin
@@ -53,30 +46,9 @@ clean:
 
 distclean: clean
 	$(RM) config.mak
+	$(RM) $(TARBALL)
 
-check: $(HELLO)
-	./src/tests/run_unit_tests.sh
+release: clean all
+	tar -czf $(TARBALL) $(RELEASE_FILES)
 
-syntax-check:
-	@set -e; \
-	fail=0; \
-	for f in $(HELLO_SRCS); do \
-		echo "$$f"; \
-		if ! $(CC) $(CFLAGS) -fsyntax-only $$f; then \
-			fail=1; \
-		fi
-	done; \
-	if test $$fail -ne 0; then \
-		exit 1;
-	fi
-
-distcheck: distclean
-	@set -e; \
-	for d in $(DESTDIRS); do \
-		case " $(ALLOWED_DIRS) " in \
-			*" $$d "*) ;; \
-			*) echo "Error unexpected directory '$$d'"; exit 1 ;; \
-		esac; \
-	done
-
-.PHONY: all clean dist-clean install uninstall build syntax-check distcheck dist
+.PHONY: all clean distclean install uninstall build release

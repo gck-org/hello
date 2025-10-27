@@ -1,11 +1,11 @@
 #!/bin/sh
-#   gck.format - Format C source code
+#   gck.generate-artifacts - Generate compile_commands.json
 #
 #   FEATURES:
-#       - Uses clang-format to force C code
+#       - Generate compile_commands.json
 #
 #    COMPILATION (Linux - POSIX):
-#        ./format
+#        ./generate-artifacts
 #
 #
 #   LICENSE: BSD-3-Clause
@@ -50,7 +50,7 @@ There is NO WARRANTY, to the extent permitted by law."
 
 usage="\
 Usage: $me [OPTION]...
-Format C source code
+Generates artifacts
 
 Options:
 
@@ -69,7 +69,7 @@ while test $# -gt 0; do
   shift
 done
 
-find . -name "*.c" -exec clang-format -i --verbose {} \;
-find . -name "*.h" -exec clang-format -i --verbose {} \;
+mkdir -p build
+bear --output build/compile_commands.json -- make
 
-# End: format
+# End: generate-artifacts

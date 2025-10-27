@@ -1,11 +1,11 @@
 #!/bin/sh
-#   gck.format - Format C source code
+#   gck.make - Generate manual page
 #
 #   FEATURES:
-#       - Uses clang-format to force C code
+#       - Generate manual page
 #
 #    COMPILATION (Linux - POSIX):
-#        ./format
+#        ./make
 #
 #
 #   LICENSE: BSD-3-Clause
@@ -50,12 +50,14 @@ There is NO WARRANTY, to the extent permitted by law."
 
 usage="\
 Usage: $me [OPTION]...
-Format C source code
+Builds man page
 
 Options:
 
    --help     print this help and exit
    --version  output version information"
+
+package=hello
 
 while test $# -gt 0; do
   case $1 in
@@ -69,7 +71,6 @@ while test $# -gt 0; do
   shift
 done
 
-find . -name "*.c" -exec clang-format -i --verbose {} \;
-find . -name "*.h" -exec clang-format -i --verbose {} \;
+help2man --include=man/$package.x ./bin/$package > $package.1
 
-# End: format
+# End: make
