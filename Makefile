@@ -49,7 +49,7 @@ clean:
 	$(MAKE) -C doc clean
 
 distclean: clean
-	$(RM) config.mak
+	$(RM) config.mak config.status
 	$(RM) $(TARBALL)
 	$(MAKE) -C doc clean
 
