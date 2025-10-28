@@ -51,7 +51,7 @@ clean:
 distclean: clean
 	$(RM) config.mak
 	$(RM) $(TARBALL)
-	$(MAKE) -C doc distclean
+	$(MAKE) -C doc clean
 
 release: clean all
 	tar -czf $(TARBALL) $(RELEASE_FILES)
