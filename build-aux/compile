@@ -50,14 +50,20 @@ Usage: $me [OPTION]...
 Compile wrapper for GCK distributions
 
 Options:
+   -R         force re-compile everything
 
    --help     print this help and exit
-   --version  output version information"
+   --version  output version information
+
+Automatically passes arugments to 'configure'"
+
+rebuild=
 
 while test $# -gt 0; do
   case $1 in
     --help) echo "$usage"; exit 0;;
     --version) echo "$version"; exit 0;;
+    -R) rebuild=true ;;
     -*)
      echo "$0: Unknown option '$1'." >&2
      echo "$0: Try '--help' for more information." >&2
@@ -66,6 +72,9 @@ while test $# -gt 0; do
   shift
 done
 
+if [ -f ./config.mak ] && [ -z "$rebuild" ]; then
+   echo "$0: reusing old 'config.mak'"
+else
 if [ ! -x ./configure ]; then
     echo "$0: 'configure' not found or not executable" >&2
     exit 1
@@ -76,6 +85,8 @@ echo "$0: configuring $(basename "$(git rev-parse --show-toplevel)")"
 if [ $? -ne 0 ]; then
     echo "error: configure failed" >&2
     exit 1
+fi
+
 fi
 
 echo "$0: starting build"
