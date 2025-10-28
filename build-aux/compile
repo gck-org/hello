@@ -1,10 +1,8 @@
 #!/bin/sh
-#   gck.bootstrap - Prepares the build enviroment
-#   FEATURES:
-#       - Initializes submodules
+#   gck.compile - Compile wrapper for GCK distributions
 #
 #    COMPILATION (Linux - POSIX):
-#        ./bootstrap
+#        ./compile
 #
 #
 #   LICENSE: BSD-3-Clause
@@ -49,38 +47,44 @@ There is NO WARRANTY, to the extent permitted by law."
 
 usage="\
 Usage: $me [OPTION]...
-Prepares the build enviroment
+Compile wrapper for GCK distributions
 
 Options:
 
    --help     print this help and exit
    --version  output version information"
 
-while [ $# -gt 0 ]; do
+while test $# -gt 0; do
   case $1 in
-    --help) echo "$usage"; exit 0 ;;
-    --version) echo "$version"; exit 0 ;;
+    --help) echo "$usage"; exit 0;;
+    --version) echo "$version"; exit 0;;
     -*)
-      echo "$0: Unknown option '$1'." >&2
-      echo "$0: Try '--help' for more information." >&2
-      exit 1 ;;
+     echo "$0: Unknown option '$1'." >&2
+     echo "$0: Try '--help' for more information." >&2
+     exit 1;;
   esac
   shift
 done
 
-
-echo "$0: Bootstrapping from checked-out $(basename "$(git rev-parse --show-toplevel)") sources"
-
-if [ ! -f .gitmodules ]; then
-    echo "$0: No .gitmodules file found. Skipping submodule initialization."
-    exit 0
+if [ ! -x ./configure ]; then
+    echo "$0: 'configure' not found or not executable" >&2
+    exit 1
 fi
 
-git config -f .gitmodules --get-regexp path | while read -r key path; do
-    echo "$0: initializing submodule '$path'..."
-    git submodule update --init --recursive "$path"
-done
+echo "$0: configuring $(basename "$(git rev-parse --show-toplevel)")"
+./configure "$@"
+if [ $? -ne 0 ]; then
+    echo "error: configure failed" >&2
+    exit 1
+fi
 
-echo "$0: Done."
+echo "$0: starting build"
+make -j"$(nproc)"
+if [ $? -ne 0 ]; then
+    echo "error: build failed" >&2
+    exit 1
+fi
 
-# End: bootstrap
+echo "$0: finish"
+
+# End: compile

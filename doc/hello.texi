@@ -1,0 +1,240 @@
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename hello.info
+@include version.texi
+@settitle GCK Hello @value{VERSION}
+
+@c Define a new index for options.
+@defcodeindex op
+@c Combine everything into one index (arbitrarily chosen to be the
+@c concept index).
+@syncodeindex op cp
+@c %**end of header
+
+@copying
+This manual is for GCK Hello (version @value{VERSION}, @value{UPDATED}),
+which greets you nicely.
+
+Copyright @copyright{} 2025 GCK.
+
+@quotation
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+@end quotation
+@end copying
+
+@titlepage
+@title GCK Hello
+@subtitle for version @value{VERSION}, @value{UPDATED}
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+
+@ifnottex
+@node Top
+@top GCK Hello
+
+This manual is for GCK Hello (version @value{VERSION}, @value{UPDATED}),
+which greets you nicely.
+@end ifnottex
+
+@menu
+* Overview::		General purpose and information.
+* Sample output::	Sample output from @command{hello}.
+* Invoking hello::	How to run @command{hello}.
+* Reporting bugs::	Sending bug reports and feature suggestions.
+* Concept index::	Index of concepts.
+@end menu
+
+
+@node Overview
+@chapter Overview
+
+@cindex greetings
+@cindex overview
+
+The GCK @command{hello} program produces a simple, friendly greeting.
+It serves as a minimal example of a C program with proper GNU-style
+structure and build system.
+
+@cindex example program
+@cindex template
+This program is designed as a template and example for other projects.
+It demonstrates basic C programming practices, proper project structure,
+and standard GNU conventions.
+
+@cindex features
+GCK Hello has the following features:
+
+@itemize @bullet
+@item Simple and friendly greeting
+@item Support for command-line arguments
+@item Standard GNU-style help and version options
+@item Clean, readable C source code
+@item Proper project structure with build system
+@end itemize
+
+@cindex implementation
+GCK Hello is implemented in C and follows standard POSIX conventions.
+The program accepts command-line arguments and greets each one individually,
+or prints a default greeting if no arguments are provided.
+
+@cindex license
+This program is distributed under the BSD 3-Clause License, allowing
+free use, modification, and distribution with minimal restrictions.
+
+
+@node Sample output
+@chapter Sample output
+
+@cindex sample output
+@cindex examples
+
+Here are some examples of running GCK Hello.
+
+This is the output of the command @samp{hello}:
+
+@example
+Hello, World!
+@end example
+
+This is the output of the command @samp{hello Alice}:
+
+@example
+Hello, Alice!
+@end example
+
+This is the output of the command @samp{hello Alice Bob}:
+
+@example
+Hello, Alice!
+Hello, Bob!
+@end example
+
+This is the output of the command @samp{hello --help}:
+
+@example
+Usage: hello [OPTION]...
+Greets you nicely.
+
+      --help                  display this help and exit
+      --version               display version information and exit
+@end example
+
+
+@node Invoking hello
+@chapter Invoking @command{hello}
+
+@cindex invoking
+@cindex options
+@cindex usage
+@cindex help
+
+The format for running the @command{hello} program is:
+
+@example
+hello [@var{option}]... [@var{name}]...
+@end example
+
+With no arguments, @command{hello} prints the greeting @samp{Hello, World!}.
+
+If one or more @var{name} arguments are provided, @command{hello} greets
+each name individually with @samp{Hello, @var{name}!}.
+
+@command{hello} supports the following options:
+
+@table @option
+@item --help
+@opindex --help
+Print an informative help message on standard output and exit
+successfully.
+
+@item --version
+@opindex --version
+Print the version number and licensing information of Hello on
+standard output and then exit successfully.
+@end table
+
+
+@node Reporting bugs
+@chapter Reporting bugs
+
+@cindex bug reporting
+@cindex problems
+@cindex reporting bugs
+
+To report bugs, suggest enhancements or otherwise discuss GCK Hello,
+please send electronic mail to the project maintainers.
+
+@cindex checklist for bug reports
+For bug reports, please include enough information for the maintainers
+to reproduce the problem.  Generally speaking, that means:
+
+@itemize @bullet
+@item The version numbers of Hello (which you can find by running
+      @w{@samp{hello --version}}) and any other program(s) or
+      manual(s) involved.
+@item Hardware and operating system names and versions.
+@item The contents of any input files necessary to reproduce the bug.
+@item The expected behavior and/or output.
+@item A description of the problem and samples of any erroneous output.
+@item Options you gave to @command{configure} other than specifying
+      installation directories.
+@item Anything else that you think would be helpful.
+@end itemize
+
+When in doubt whether something is needed or not, include it.  It's
+better to include too much than to leave out something important.
+
+@cindex patches, contributing
+Patches are welcome; if possible, please make them with @samp{@w{diff
+-c}} and include @file{ChangeLog} entries.  Please follow the existing
+coding style.
+
+
+@node BSD License
+@appendix BSD License
+
+This program is distributed under the BSD 3-Clause License:
+
+@quotation
+Copyright (c) 2025, GCK
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+@end quotation
+
+
+@node Concept index
+@unnumbered Concept index
+
+@printindex cp
+
+@bye

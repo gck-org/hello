@@ -10,7 +10,7 @@ FLAGS := -I. -DCOMMIT=$(COMMIT) --std=c2x -pedantic
 
 VERSION := $(shell git describe --tags --always --dirty)
 TARBALL := $(PACKAGE)-$(VERSION).tar.gz
-RELEASE_FILES := doc src lib COPYING AUTHORS README yait.1 INSTALL Makefile configure config.h
+RELEASE_FILES := doc src lib COPYING AUTHORS README hello.1 INSTALL Makefile configure config.h
 
 -include config.mak
 
@@ -20,7 +20,7 @@ all:
 	@exit 1
 else
 
-all: build $(BIN)
+all: build $(BIN) doc
 
 build:
 	mkdir -p bin
@@ -37,18 +37,23 @@ endif
 install: $(BIN)
 	cp $(BIN) $(PREFIX)
 
+doc:
+	$(MAKE) -C doc all
+
 uninstall:
 	$(RM) $(PREFIX)$(PACKAGE)
 
 clean:
 	$(RM) -r bin
 	$(RM) -r build
+	$(MAKE) -C doc clean
 
 distclean: clean
 	$(RM) config.mak
 	$(RM) $(TARBALL)
+	$(MAKE) -C doc distclean
 
 release: clean all
 	tar -czf $(TARBALL) $(RELEASE_FILES)
 
-.PHONY: all clean distclean install uninstall build release
+.PHONY: all clean distclean install uninstall build release doc
