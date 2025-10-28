@@ -39,7 +39,7 @@
 #
 
 me=$0
-scriptversion="1.0.0"
+scriptversion="1.0.1"
 
 version="make $scriptversion
 
@@ -179,7 +179,7 @@ cat <<EOF > config.status
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-printf "recreating config.mak... "
+printf "config.status: recreating config.mak... "
 {
   printf "PREFIX=%s\\n" "$prefix"
   printf "CFLAGS=%s\\n" "$CFLAGS"
@@ -189,7 +189,7 @@ printf "done\n"
 EOF
 chmod u+x config.status
 
-printf "creating config.mak... "
+printf "configure: creating config.mak... "
 {
   printf "PREFIX=%s\n" "$prefix"
   printf "CFLAGS=%s\n" "$CFLAGS"
