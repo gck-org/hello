@@ -81,6 +81,4 @@ git config -f .gitmodules --get-regexp path | while read -r key path; do
     git submodule update --init --recursive "$path"
 done
 
-echo "$0: Done."
-
 # End: bootstrap
