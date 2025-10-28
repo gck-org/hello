@@ -70,6 +70,6 @@ while test $# -gt 0; do
 done
 
 mkdir -p build
-bear --output build/compile_commands.json -- make
+bear --output build/compile_commands.json -- make -B -j"$(nproc)"
 
 # End: generate-artifacts
