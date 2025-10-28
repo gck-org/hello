@@ -53,8 +53,8 @@ typedef enum { MIT, GPL, BSD, UNL } licence_t;
 
 static int exit_status;
 
-static void print_help();
-static void print_version();
+static void print_help(void);
+static void print_version(void);
 
 int main(int argc, char **argv)
 {
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 	return exit_status;
 }
 
-static void print_help()
+static void print_help(void)
 {
 	printf("Usage: %s [OPTION]...\n", PROGRAM);
 	fputs("\
@@ -87,7 +87,7 @@ Greets you nicely.\n",
 	exit(exit_status);
 }
 
-static void print_version()
+static void print_version(void)
 {
 	printf("%s %s %d\n", prog_name, VERSION, COMMIT);
 
